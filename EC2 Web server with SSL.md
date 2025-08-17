@@ -1,6 +1,8 @@
-# Launching Website
+# EC2 Webserver with SSL
 
 The purpose of this project is to setup a HTTPS webserver on an Amazon EC2 instance using NGINX - which can be easily accessible from the browser.
+
+This will display my own personal website mazharulislam.dev on any browser.
 
 ## Purchasing domain via CloudFlare
 
@@ -46,34 +48,77 @@ Once the webserver is up and running, this connection will be checked.
 
 Using `sudo apt update` and `sudo apt install nginx` the latest files for nginx are installed:
 
-        $ sudo apt update                                                                      
-        Hit:1 http://eu-north-1.ec2.archive.ubuntu.com/ubuntu noble InRelease                                          
-        Get:2 http://eu-north-1.ec2.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]                         
-        Get:3 http://eu-north-1.ec2.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]    
-        ...
-        108 packages can be upgraded. Run 'apt list --upgradable' to see them. 
-        
-        $ sudo apt install nginx                                                               
-        Reading package lists... Done                                                                                  
-        Building dependency tree... Done 
-        ...
-        No VM guests are running outdated hypervisor (qemu) binaries on this host.
+    $ sudo apt update                                                                      
+    Hit:1 http://eu-north-1.ec2.archive.ubuntu.com/ubuntu noble InRelease                                          
+    Get:2 http://eu-north-1.ec2.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]                         
+    Get:3 http://eu-north-1.ec2.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]    
+    ...
+    108 packages can be upgraded. Run 'apt list --upgradable' to see them. 
+    
+    $ sudo apt install nginx                                                               
+    Reading package lists... Done                                                                                  
+    Building dependency tree... Done 
+    ...
+    No VM guests are running outdated hypervisor (qemu) binaries on this host.
 
 To check if the server ip was able to be found via DNS the `nslookup` and `dig` command were used to query this:
 
-        $ nslookup mazharulislam.dev                                                           
-        Server:         [myip]                                                                                     
-        Address:        [myip]#[myport]                                                                                                                                                                                                 
-        Non-authoritative answer:                                                                                      
-        Name:   mazharulislam.dev                                                                                      
-        Address: XX.XX.XXX.108 
+    $ nslookup mazharulislam.dev                                                           
+    Server:         [myip]                                                                                     
+    Address:        [myip]#[myport]                                                                                                                                                                                                 
+    Non-authoritative answer:                                                                                      
+    Name:   mazharulislam.dev                                                                                      
+    Address: XX.XX.XXX.108 
 
-        $ dig mazharulislam.dev
-        ...
-        ;; ANSWER SECTION:                                                                                             
-        mazharulislam.dev.      136     IN      A       XX.XX.XXX.108
+    $ dig mazharulislam.dev
+    ...
+    ;; ANSWER SECTION:                                                                                             
+    mazharulislam.dev.      136     IN      A       XX.XX.XXX.108
 
 Both sections point towards the correct IPv4 address.
 
+Using `systemctl` command the `nginx` webserver is checked to see if it is running.
 
-        
+    $ sudo systemctl status nginx                                                          
+    ● nginx.service - A high performance web server and a reverse proxy server                                          
+    Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; preset: enabled)                               
+    Active: active (running) since Sun 2025-08-17 16:29:46 UTC; 1h 19min ago 
+    ...
+
+Under `Active` it says `active (running)` which is desired.
+
+Since this already happened without me starting nginx I used the `systemctl start` command and re-ran `status` in case:
+
+    $ sudo systemctl start nginx
+    $ sudo systemctl status nginx                                                          
+    ● nginx.service - A high performance web server and a reverse proxy server                                          
+    Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; preset: enabled)                               
+    Active: active (running) since Sun 2025-08-17 16:29:46 UTC; 1h 19min ago 
+    ...
+
+To test if nginx works - the data from the server will be retrieved with the `curl` command.
+
+        $ curl localhost
+        <!DOCTYPE html>                                                                                                
+        <html>                                                                                                         
+        <head>                                                                                                         
+        <title>Welcome to nginx!</title>
+        ...
+        <p>If you see this page, the nginx web server is successfully installed and                                    
+        working. Further configuration is required.</p>
+        ...
+        </body>                                                                                                        
+        </html>
+
+This works - which is great!
+
+I attempted to test from the web browser of my Windows PC on Google Chrome by typing the website and searching.
+
+I recieved a "refused to connect" error.
+
+The site is HTTP - and not HTTPS, and found out online that most browsers do not display website content from HTTP by default, as it is unsecure, and malicious entities can steal data over this connection.
+
+It needs to be encrypted using an SSL certificate, i.e., become HTTPS.
+
+To do this I came across [this](https://www.youtube.com/watch?v=cBh6yTH-XY4&list=WL&index=1) video which explains how to add SSL to an nginx webserver.
+
