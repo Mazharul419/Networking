@@ -2,7 +2,10 @@
 
 The purpose of this project is to setup a HTTPS webserver on an Amazon EC2 instance using NGINX - which can be easily accessible from the browser.
 
-This will display my own personal website mazharulislam.dev on any browser.
+This will display my own personal website mazharulislam.dev on any browser - the final output looks like this:
+
+<img width="1920" height="1040" alt="image" src="https://github.com/user-attachments/assets/1b734693-a703-41f8-bddf-2df7aeb10042" />
+
 
 ## Purchasing domain via CloudFlare
 
@@ -16,15 +19,20 @@ I set up an EC2 instance using Ubuntu with the following:
 
 ### Quick Start:
 AMI: Default - Ubuntu Server 24.04 LTS (HVM), SSD Volume Type (Free tier eligible)
+<br>
 Architecture: Default - 64-bit (x86)
+<br>
 Instance type: Default - t3.micro
+<br>
 Key pair login - Yes
 
 ### Security group:
 ✅ Allow SSH traffic from - [My IP]
+<br>
 ✅ Allow HTTPS traffic from the internet
+<br>
 ✅ Allow HTTP traffic from the internet
-
+<br><br>
 The instance is launched - a note is made of the IPv4 address, which will be used later for mazharulislam.dev domain to point towards.
 
 Since I work from Windows - I launched Windows Subsystem for Linux (WSL) and used the ssh login option - making sure I `cd` into the folder my private key is located:
