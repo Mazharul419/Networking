@@ -46,6 +46,8 @@ Once the webserver is up and running, this connection will be checked.
 
 ## Setting up webserver
 
+[This](https://www.youtube.com/watch?v=n7vKxkMIBM0&list=WL&index=2) video explains the steps to setting up nginx on Ubuntu - which are explained below.
+
 Using `sudo apt update` and `sudo apt install nginx` the latest files for nginx are installed:
 
     $ sudo apt update                                                                      
@@ -120,5 +122,73 @@ The site is HTTP - and not HTTPS, and found out online that most browsers do not
 
 It needs to be encrypted using an SSL certificate, i.e., become HTTPS.
 
-To do this I came across [this](https://www.youtube.com/watch?v=cBh6yTH-XY4&list=WL&index=1) video which explains how to add SSL to an nginx webserver.
+## Encryption via SSL
 
+To encrypt the HTTPS connection a library called Certbot is used. [This](https://www.youtube.com/watch?v=cBh6yTH-XY4&list=WL&index=1) video which explains how to add SSL to an nginx webserver.
+
+The first step is to install certbot and python3 - answer "yes" or "y" for continuing installation.
+
+    $ sudo apt install certbot python3-certbot-nginx                                       
+    Reading package lists... Done                                                                                  
+    Building dependency tree... Done
+    ...
+    Need to get 1097 kB of archives.                                                                               
+    After this operation, 5699 kB of additional disk space will be used.                                           
+    Do you want to continue? [Y/n] y
+    Get:1 http://eu-north-1.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 python3-josepy all 1.14.0-1 [22.1 kB]                                                                                                     Get:2 http://eu-north-1.ec2.archive.ubuntu.com/ubuntu noble/universe amd64 python3-rfc3339 all 1.1-4 [6744 B]
+    ...
+    No user sessions are running outdated binaries.                                                                                                                                                                      
+    No VM guests are running outdated hypervisor (qemu) binaries on this host.
+
+Now that the certbot is installed - `vim` is used inside the nginx.config file to set the `default_server` variable to mazharulislam.dev.
+
+    $ sudo vim /etc/nginx/sites-available/default
+
+Inside vim:
+
+<img width="1051" height="409" alt="image" src="https://github.com/user-attachments/assets/0745424f-1321-4095-9b86-4187c9560cf6" />
+
+After saving and exiting test the syntax with `nginx -t` command:
+
+    $ sudo nginx -t                                                                        
+    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+    
+The last step is obtaining an SSL certificate from certbot - ensure your email is entered and "yes" is answered for additional permissions and acknowledgements:
+
+    $ sudo certbot --nginx -d mazharulislam.dev                                            
+    Saving debug log to /var/log/letsencrypt/letsencrypt.log                                                       
+    Enter email address (used for urgent renewal and security notices)                                              
+    (Enter 'c' to cancel): [INSERT EMAIL ADDRESS]                                                                                                                                                              - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -                                
+    Please read the Terms of Service at                                                                            
+    https://letsencrypt.org/documents/LE-SA-v1.5-February-24-2025.pdf. You must                                    
+    agree in order to register with the ACME server. Do you agree?                                                 
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    (Y)es/(N)o: y
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -                                
+    Would you be willing, once your first certificate is successfully issued, to                                   
+    share your email address with the Electronic Frontier Foundation, a founding                                   
+    partner of the Let's Encrypt project and the non-profit organization that                                      
+    develops Certbot? We'd like to send you email about our work encrypting the web,                               
+    EFF news, campaigns, and ways to support digital freedom.                                                      
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -                                
+    (Y)es/(N)o: y    
+
+    Account registered.                                                                                            
+    Requesting a certificate for mazharulislam.dev                                                                                                                                                                                
+    Successfully received certificate.                                                                             
+    Certificate is saved at: /etc/letsencrypt/live/mazharulislam.dev/fullchain.pem                                 
+    Key is saved at:         /etc/letsencrypt/live/mazharulislam.dev/privkey.pem                                   
+    This certificate expires on 2025-11-15.                                                                        
+    These files will be updated when the certificate renews.                                                       
+    Certbot has set up a scheduled task to automatically renew this certificate in the background.                                                                                                                                
+    Deploying certificate                                                                                          
+    Successfully deployed certificate for mazharulislam.dev to /etc/nginx/sites-enabled/default                    
+    Congratulations! You have successfully enabled HTTPS on https://mazharulislam.dev
+
+The last line shows HTTPS is successfully enabled for mazharulislam.dev
+
+The final website looks like this:
+
+<img width="1920" height="1040" alt="image" src="https://github.com/user-attachments/assets/f8729ffa-f3e1-45a7-bb45-57bdb3c2836d" />
+
+The project is complete!
