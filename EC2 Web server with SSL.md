@@ -187,8 +187,21 @@ The last step is obtaining an SSL certificate from certbot - ensure your email i
 
 The last line shows HTTPS is successfully enabled for mazharulislam.dev
 
+Going back to the config file for nginx you can see nginx is listening for packets from port 80 - HTTP and redirecting to HTTPS:
+
+<img width="811" height="400" alt="image" src="https://github.com/user-attachments/assets/6debe4f4-0fcf-4f18-936b-095b73b7ed94" />
+
+This is the desired outcome.
+
+## Final testing
+
 The final website looks like this:
 
 <img width="1920" height="1040" alt="image" src="https://github.com/user-attachments/assets/f8729ffa-f3e1-45a7-bb45-57bdb3c2836d" />
 
 The project is complete!
+
+### Notes
+
+*Due to the free usage limit of EC2 I stop the instance whenever it is not in use
+*Additionally, due to the nature of IPv4 addressing in EC2, every time an EC2 instance is started again, a new IPv4 address is assigned - this has to be manually updated on CloudFlare's A record each time.
